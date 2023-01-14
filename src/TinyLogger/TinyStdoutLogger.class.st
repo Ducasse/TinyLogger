@@ -1,15 +1,13 @@
 "
-Description
---------------------
-
 I am a logger that will log the informations in the StdOut.
 
 I should not be used directly but via a `TinyLogger`.
 
-Examples
---------------------
+## Examples
 
+```
 	(TinyStdoutLogger for: aTinyLogger) record: 'First log'
+```
 "
 Class {
 	#name : #TinyStdoutLogger,
@@ -36,8 +34,7 @@ TinyStdoutLogger >> clearLog [
 { #category : #initialization }
 TinyStdoutLogger >> initialize [
 	super initialize.
-	self flag: #pharo6. "This is needed because in Pharo 6.1 Stdio does not works well. When Pharo 7 will be the minimum supported, remove this hack."
-	streamClassProvider := SystemVersion current major < 7 ifTrue: [ FileStream ] ifFalse: [ Stdio ]
+	streamClassProvider := Stdio 
 ]
 
 { #category : #logging }

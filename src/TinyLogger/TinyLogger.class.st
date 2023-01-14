@@ -1,7 +1,4 @@
 "
-Description
---------------------
-
 I am the main entry point of the project. This project is build with a composite design pattern and I am the composite. I contains subclasses of TinyLeafLogger.
 
 I am a default instance that is used by default in the image when you send #record to a string for example. This instance should be configured by the user before been used (else it will do nothing). 
@@ -9,8 +6,7 @@ It is also possible to create another instance with different loggers and to use
 
 The user can configure the timestamp formating via the #timestampFormatBlock paramater.
 
-Public API and Key Messages
---------------------
+## Public API and Key Messages
 
 - #record: 						Log the parameter of the sub loggers
 - #clearLog 						Clear the output of the sub loggers
@@ -22,22 +18,30 @@ Public API and Key Messages
 - #ensure: 						Variant of all previous #addX message. This one will add the new logger only if there is not equivalent logger already present
 - #timestampFormatBlock: 	Give as parameter a block taking a stream as parameter and writing the timestamp you want
 
-Examples
---------------------
+## Examples
 
-	""Add two file loggers, a stdio logger and a transcript logger to the default logger.""
-	TinyLogger default
-		addTranscriptLogger;
-		addStdoutLogger;
-		addFileLoggerNamed: 'Test.log';
-		addFileLoggerNamed: 'MyOtherLog.log'.
-		
-	""Record a string via the default logger""
-	'My string' record.
-	TinyLogger default record: 'My string'.
+Add two file loggers, a stdio logger and a transcript logger to the default logger.
+
+```
+TinyLogger default
+	addTranscriptLogger;
+	addStdoutLogger;
+	addFileLoggerNamed: 'Test.log';
+	addFileLoggerNamed: 'MyOtherLog.log'.
+```
+
+Record a string via the default logger.
+
+```		
+
+'My string' record.
+TinyLogger default record: 'My string'.
+```
 	
-	""Record with nesting via the default logger""
-	self execute: [ 1 to: 10 do: [ :value | value asString record ] ] recordedAs: 'Task with only one nesting.'
+Record with nesting via the default logger
+
+```
+self execute: [ 1 to: 10 do: [ :value | value asString record ] ] recordedAs: 'Task with only one nesting.'
 	
 	self execute: [ 
 		1 to: 10 do: [ :value1 | 
@@ -46,30 +50,42 @@ Examples
 				] recordedAs: 'My second nest'
 			 ]
 		 ] recordedAs: 'My first nest'.
+```
+
 	
-	""Record with a non default logger""
-	TinyLogger new
-		addTranscriptLogger;
-		record: 'Test'.
+Record with a non default logger
+
+```
+TinyLogger new
+	addTranscriptLogger;
+	record: 'Test'.
+```
+
+Change the default logger Objects should use during the execution of a subpart of the system	
 	
-	""Change the default logger Objects should use during the execution of a subpart of the system""	
-	TinyCurrentLogger value: (TinyLogger new addTranscriptLogger; yourself) during: [ 
+```
+TinyCurrentLogger 
+	value: (TinyLogger new addTranscriptLogger; yourself) 
+	during: [ 
 		'test' record.
 		TinyCurrentLogger value record: 'Test2'
 	]
+```
 		
-	""Change the default timestamp format""
-	TinyLogger default
+Change the default timestamp format
+```
+TinyLogger default
 		timestampFormatBlock:
 			[ :aStream :timestamp | timestamp asDate printOn: aStream. aStream << ' '. ""Cannot use #space because of Stdio streams"" timestamp asTime print24: true on: aStream ].
- 
-Internal Representation and Key Implementation Points.
---------------------
 
-    Instance Variables
-	depth:							<anInteger>		I record the depth level of the nesting.
-	loggersMap:					<aDictonary>		I am used to store the loggers. I keep for each kind of loggers a collection of their instances.
-	timestampFormatBlock:		<aBlock>			I am a block defining the way the timestamp should be written.
+```
+ 
+## Internal Representation and Key Implementation Points.
+
+Instance Variables
+- depth:							<anInteger>		I record the depth level of the nesting.
+- loggersMap:					<aDictonary>		I am used to store the loggers. I keep for each kind of loggers a collection of their instances.
+- timestampFormatBlock:		<aBlock>			I am a block defining the way the timestamp should be written.
 
 "
 Class {
@@ -118,8 +134,7 @@ TinyLogger >> addLogger: aLogger [
 
 	^ (self loggersMap
 		 at: aLogger kind
-		 ifAbsentPut: [ OrderedCollection new ]) add:
-		(aLogger parentLogger: self)
+		 ifAbsentPut: [ OrderedCollection new ]) add: (aLogger parentLogger: self)
 ]
 
 { #category : #'public API' }
@@ -134,7 +149,7 @@ TinyLogger >> addTranscriptLogger [
 
 { #category : #logging }
 TinyLogger >> clearLog [
-	self loggers do: #clearLog
+	self loggers do: [ :each |  each clearLog ]
 ]
 
 { #category : #nesting }
@@ -290,7 +305,9 @@ TinyLogger >> timestampFormatBlock: anObject [
 
 { #category : #'accessing - loggers' }
 TinyLogger >> transcriptLoggers [
-	^ self loggersMap at: TinyTranscriptLogger kind ifAbsentPut: [ OrderedCollection new ]
+	^ self loggersMap 
+		at: TinyTranscriptLogger kind 
+		ifAbsentPut: [ OrderedCollection new ]
 ]
 
 { #category : #'public API' }

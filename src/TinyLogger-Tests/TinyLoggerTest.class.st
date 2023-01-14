@@ -150,7 +150,7 @@ TinyLoggerTest >> testEnsureTranscriptLogger [
 { #category : #test }
 TinyLoggerTest >> testExecuteRecordedAs [
 	| contents stream bool |
-	self skipInPharo6.
+
 	bool := false.
 	logger
 		removeAllLoggers;
@@ -243,6 +243,7 @@ TinyLoggerTest >> testExecuteRecordedAsReturnBlockContent [
 
 { #category : #test }
 TinyLoggerTest >> testFileLoggers [
+
 	logger
 		addTranscriptLogger;
 		addFileLoggerNamed: 'test.log';

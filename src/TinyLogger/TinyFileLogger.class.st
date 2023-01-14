@@ -1,25 +1,23 @@
 "
-Description
---------------------
-
 I am a logger that will log the informations in a file on the file system.
 
 I am configured with a file name. If no file name is given to me, I'll use `TinyLogger.log` by default.
 
 I should not be used directly but via a `TinyLogger`.
 
-Examples
---------------------
+## Examples
 
+```
 	(TinyFileLogger for: aTinyLogger) record: 'First log'.
 	
 	(TinyFileLogger for: aTinyLogger named: 'anotherFile.log') record: 'First log'.	
- 
-Internal Representation and Key Implementation Points.
---------------------
 
-    Instance Variables
-	fileName:		<aString> 	Name of the file in which informations should be logged.
+```
+
+## Internal Representation and Key Implementation Points.
+
+Instance variables
+- fileName:		<aString> 	Name of the file in which informations should be logged.
 
 "
 Class {
